@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图书馆列表</title>
+</head>
+<body>
+    <table border="1" cellspacing="0">
+        <thead>
+        <tr>
+            <th>book_id值</th>
+            <th>名称</th>
+            <th>描述</th>
+            <th>国家</th>
+            <th>动作</th>
+        </tr>
+            <tbody>
+            {% for book in book_lists %}
+                <tr>
+                    <td>{{ book.book_id }}</td>
+                    <td>{{ book.book_name }}</td>
+                    <td>{{ book.book_description }}</td>
+                    <td>{{ book.book_country }}</td>
+                    <td><a href="/remove_book/?id={{ book.book_id }}" >删除</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </thead>
+    </table>
+    <a href="/add_book/">添加书籍</a>
+</body>
+</html>

@@ -1,0 +1,3 @@
+import pymysql
+#告诉Django用pymysql代替MySQLdb
+pymysql.install_as_MySQLdb()
