@@ -8,7 +8,7 @@
     <table border="1" cellspacing="0">
         <thead>
         <tr>
-            <th>book_id值</th>
+            <th>序列</th>
             <th>名称</th>
             <th>描述</th>
             <th>国家</th>
@@ -17,7 +17,7 @@
             <tbody>
             {% for book in book_lists %}
                 <tr>
-                    <td>{{ book.book_id }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ book.book_name }}</td>
                     <td>{{ book.book_description }}</td>
                     <td>{{ book.book_country }}</td>
