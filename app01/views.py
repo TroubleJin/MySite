@@ -3,14 +3,6 @@ from django.shortcuts import render,redirect
 from app01 import models
 from django.http import HttpResponse
 
-def login(request):
-    error_msg = ''
-    users_info = models.UserInfo.objects.all()
-    for user_info in users_info:
-        if user_info['name'] == request.POST['name'] and user_info['password'] == request.POST['pwd']:
-            return redirect(request, '/book_list/')
-    return render(request, 'login.html', {'error_msg': error_msg})
-
 def book_list(request):
     ret = models.Book_list.objects.all()
     return render(request,'book_list.html',{'book_lists':ret})
@@ -35,3 +27,12 @@ def remove_book(request):
     else:
         print('没有找到删除的id')
     return redirect('/book_list/')
+
+def edit_book(request):
+    print('edit')
+    edit_book_id=request.GET.get('id',None)
+    print(edit_book_id)
+    if edit_book_id:
+        book_obj=models.Book_list.objects.get(book_id=edit_book_id)
+        print(edit_book_id)
+        return render(request,'edit_book.html',{'book_obj':book_obj})
