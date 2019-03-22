@@ -29,10 +29,19 @@ def remove_book(request):
     return redirect('/book_list/')
 
 def edit_book(request):
-    print('edit')
+    if request.method == 'POST':
+        edit_book_id=request.POST.get('book_id')
+        print(request.POST)
+        book_obj = models.Book_list.objects.get(book_id=edit_book_id)
+        book_obj.book_name=request.POST.get('book_name')
+        book_obj.book_description=request.POST.get('book_description')
+        book_obj.book_country=request.POST.get('book_country')
+        book_obj.save()
+        return redirect('/book_list/')
     edit_book_id=request.GET.get('id',None)
-    print(edit_book_id)
     if edit_book_id:
         book_obj=models.Book_list.objects.get(book_id=edit_book_id)
         print(edit_book_id)
         return render(request,'edit_book.html',{'book_obj':book_obj})
+    else:
+        return HttpResponse('ERROR edit_book_id')
