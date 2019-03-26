@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图书馆列表</title>
+</head>
+<body>
+    <table border="1" cellspacing="0">
+        <thead>
+        <tr>
+            <th>序列</th>
+            <th>出版社</th>
+        </tr>
+            <tbody>
+            {% for publisher in publisher_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ publisher.publisher_name }}</td>
+                    <td>
+                        <a href="/remove_publisher/?id={{ book.book_id }}" >删除出版社</a>
+                        <a href="/edit_publisher/?id={{ book.book_id }}">编辑出版社</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </thead>
+    </table>
+    <a href="/add_book/">添加书籍</a>
+</body>
+</html>

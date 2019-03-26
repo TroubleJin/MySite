@@ -45,3 +45,7 @@ def edit_book(request):
         return render(request,'edit_book.html',{'book_obj':book_obj})
     else:
         return HttpResponse('ERROR edit_book_id')
+
+def publisher_list(request):
+    all_publisher_obj=models.publisher_list.objects.all()
+    return render(request,'publisher_list.html',{"publisher_list":all_publisher_obj})
