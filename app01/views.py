@@ -51,7 +51,7 @@ def publisher_list(request):
     return render(request,'publisher_list.html',{"publisher_list":all_publisher_obj})
 
 def add_publisher(request):
-    pass
+    return render(request,'add_publisher.html')
 
 def remove_publisher(request):
     pass
