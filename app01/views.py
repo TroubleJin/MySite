@@ -49,3 +49,12 @@ def edit_book(request):
 def publisher_list(request):
     all_publisher_obj=models.publisher_list.objects.all()
     return render(request,'publisher_list.html',{"publisher_list":all_publisher_obj})
+
+def add_publisher(request):
+    pass
+
+def remove_publisher(request):
+    pass
+
+def edit_publisher(request):
+    pass

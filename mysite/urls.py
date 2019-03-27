@@ -24,4 +24,7 @@ urlpatterns = [
     # path('edit_book/', edit_book),
     path('admin/', admin.site.urls),
     path('publisher_list/', views.publisher_list),
+    path('add_publisher/', views.add_publisher),
+    path('remove_publisher/', views.remove_publisher),
+    path('edit_publisher/', views.edit_publisher),
 ]
