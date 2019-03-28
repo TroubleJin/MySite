@@ -51,10 +51,16 @@ def publisher_list(request):
     return render(request,'publisher_list.html',{"publisher_list":all_publisher_obj})
 
 def add_publisher(request):
+    if request.method == "POST":
+        publisher_name=request.POST.get("publisher_name")
+        models.publisher_list.objects.create(publisher_name=publisher_name)
+        return redirect('/publisher_list/')
     return render(request,'add_publisher.html')
 
 def remove_publisher(request):
-    pass
+    publisher_id=request.GET.get('id')
+    models.publisher_list.objects.get(publisher_id=publisher_id).delete()
+    return redirect('/publisher_list/')
 
 def edit_publisher(request):
     pass
