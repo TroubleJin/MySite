@@ -5,27 +5,27 @@
     <title>图书馆列表</title>
 </head>
 <body>
-    <table border="1" cellspacing="0">
-        <thead>
+<table border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th>序列</th>
+        <th>出版社</th>
+        <th>操作</th>
+    </tr>
+    <tbody>
+    {% for publisher in publisher_list %}
         <tr>
-            <th>序列</th>
-            <th>出版社</th>
-            <th>操作</th>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ publisher.publisher_name }}</td>
+            <td>
+                <a href="/remove_publisher/?id={{ publisher.publisher_id }}">删除</a>
+                <a href="/edit_publisher/?id={{ publisher.publisher_id }}&num={{ forloop.counter }}">编辑</a>
+            </td>
         </tr>
-            <tbody>
-            {% for publisher in publisher_list %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ publisher.publisher_name }}</td>
-                    <td>
-                        <a href="/remove_publisher/?id={{ publisher.publisher_id }}" >删除</a>
-                        <a href="/edit_publisher/?id={{ publisher.publisher_id }}&num={{ forloop.counter }}">编辑</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </thead>
-    </table>
-    <a href="/add_publisher/">添加出版社</a>
+    {% endfor %}
+    </tbody>
+    </thead>
+</table>
+<a href="/add_publisher/">添加出版社</a>
 </body>
 </html>
