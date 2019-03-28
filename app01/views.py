@@ -16,7 +16,8 @@ def add_book(request):
         models.Book_list.objects.create(book_name=new_book_name, book_country=new_book_country,
                                      book_description=new_book_description)
         return redirect('/book_list/')
-    return render(request, 'add_book.html')
+    all_pub_obj=models.publisher_list.objects.all()
+    return render(request, 'add_book.html',{"all_pub_obj":all_pub_obj})
 
 def remove_book(request):
     print('delete')

@@ -19,7 +19,7 @@ from app01 import views
 
 urlpatterns = [
     path('book_list/', views.book_list),
-    # path('add_book/', add_book),
+    path('add_book/', views.add_book),
     # path('remove_book/', remove_book),
     # path('edit_book/', edit_book),
     path('admin/', admin.site.urls),
