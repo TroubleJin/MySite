@@ -19,7 +19,7 @@
                     <td>{{ publisher.publisher_name }}</td>
                     <td>
                         <a href="/remove_publisher/?id={{ publisher.publisher_id }}" >删除</a>
-                        <a href="/edit_publisher/?id={{ publisher.publisher_id }}">编辑</a>
+                        <a href="/edit_publisher/?id={{ publisher.publisher_id }}&num={{ forloop.counter }}">编辑</a>
                     </td>
                 </tr>
             {% endfor %}

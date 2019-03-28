@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑出版社</title>
+</head>
+<body>
+    <form action="/edit_publisher/" method="post">
+        <p>
+           序号:{{ num }} <input type="text" value="{{ publisher_obj.publisher_name  }}">
+        </p>
+        <p>
+            <input type="submit" value="提交">
+        </p>
+    </form>
+</body>
+</html>

@@ -63,4 +63,7 @@ def remove_publisher(request):
     return redirect('/publisher_list/')
 
 def edit_publisher(request):
-    pass
+    publisher_id=request.GET.get('id',None)
+    num=request.GET.get('num',None)
+    publisher_obj=models.publisher_list.objects.get(publisher_id=publisher_id)
+    return render(request,'edit_publisher.html',{'publisher_obj':publisher_obj,'num':num})
