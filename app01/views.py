@@ -66,7 +66,7 @@ def edit_publisher(request):
     if request.method == "POST":
         publisher_id = request.POST.get('publisher_id')
         publisher_name = request.POST.get('publisher_name')
-        publisher_obj= models.publisher_list.objects.get(publisher_id=publisher_id)
+        publisher_obj = models.publisher_list.objects.get(publisher_id=publisher_id)
         publisher_obj.publisher_name = publisher_name
         publisher_obj.save()
         return redirect('/publisher_list/')
