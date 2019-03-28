@@ -10,9 +10,9 @@
     <p>书籍名称:<input type="text" name="book_name"></p>
     <p>书籍描述:<input type="text" name="book_description"></p>
     <p>书籍国家:<input type="text" name="book_country"></p>
-    <select name="publisher_name">
+    <select name="publisher">
         {% for publisher in all_pub_obj %}
-            <option>{{ publisher.publisher_name }}</option>
+            <option value="{{ publisher.publisher_id }}">{{ publisher.publisher_name }}</option>
         {% endfor %}
     </select>
     <input type="submit" value="提交">

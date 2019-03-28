@@ -13,8 +13,10 @@ def add_book(request):
         new_book_name = request.POST['book_name']
         new_book_description = request.POST['book_description']
         new_book_country = request.POST['book_country']
+        publisher_id = request.POST.get('publisher')
+        # pub_obj=models.publisher_list.objects.get(publisher_id=publisher_id)
         models.Book_list.objects.create(book_name=new_book_name, book_country=new_book_country,
-                                     book_description=new_book_description)
+                                     book_description=new_book_description,book_publish_id=publisher_id)
         return redirect('/book_list/')
     all_pub_obj=models.publisher_list.objects.all()
     return render(request, 'add_book.html',{"all_pub_obj":all_pub_obj})
