@@ -7,7 +7,8 @@
 <body>
 <form action="/edit_publisher/" method="post">
     <p>
-        序号:{{ num }} <input type="text" value="{{ publisher_obj.publisher_name }}">
+        <input type="text" name="publisher_id" value="{{ publisher_obj.publisher_id }}" style="display: none">
+        序号:{{ num }} <input type="text" name="publisher_name" value="{{ publisher_obj.publisher_name }}">
     </p>
     <p>
         <input type="submit" value="提交">

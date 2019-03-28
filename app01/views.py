@@ -63,7 +63,15 @@ def remove_publisher(request):
     return redirect('/publisher_list/')
 
 def edit_publisher(request):
-    publisher_id=request.GET.get('id',None)
-    num=request.GET.get('num',None)
-    publisher_obj=models.publisher_list.objects.get(publisher_id=publisher_id)
-    return render(request,'edit_publisher.html',{'publisher_obj':publisher_obj,'num':num})
+    if request.method == "POST":
+        publisher_id = request.POST.get('publisher_id')
+        publisher_name = request.POST.get('publisher_name')
+        publisher_obj= models.publisher_list.objects.get(publisher_id=publisher_id)
+        publisher_obj.publisher_name = publisher_name
+        publisher_obj.save()
+        return redirect('/publisher_list/')
+    else:
+        publisher_id=request.GET.get('id',None)
+        num=request.GET.get('num',None)
+        publisher_obj=models.publisher_list.objects.get(publisher_id=publisher_id)
+        return render(request,'edit_publisher.html',{'publisher_obj':publisher_obj,'num':num})
