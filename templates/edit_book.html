@@ -9,9 +9,21 @@
     <p>
         <input type="text" name="book_id" value="{{ book_obj.book_id }}" style="display: none">
         书籍名称:<input type="text" name="book_name" value="{{ book_obj.book_name }}">
-        书籍描述:<input type="text" name="book_description" value="{{ book_obj.book_description }}">
-        书籍国家:<input type="text" name="book_country" value="{{ book_obj.book_country }}">
     </p>
+    <p>书籍描述:<input type="text" name="book_description" value="{{ book_obj.book_description }}"></p>
+    <p>书籍国家:<input type="text" name="book_country" value="{{ book_obj.book_country }}"></p>
+    <p>出版社:
+        <select name="publisher">
+            {% for publisher in all_publisher_obj %}
+                {% if book_obj.book_publish.publisher_id == publisher.publisher_id %}
+                    <option selected value="{{ publisher.publisher_id }}">{{ publisher.publisher_name }}</option>
+                {% else %}
+                    <option value="{{ publisher.publisher_id }}">{{ publisher.publisher_name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </p>
+
     <input type="submit" value="提交">
 </form>
 </body>

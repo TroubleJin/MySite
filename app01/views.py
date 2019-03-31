@@ -39,13 +39,15 @@ def edit_book(request):
         book_obj.book_name=request.POST.get('book_name')
         book_obj.book_description=request.POST.get('book_description')
         book_obj.book_country=request.POST.get('book_country')
+        book_obj.book_publish_id = request.POST.get('publisher')
         book_obj.save()
         return redirect('/book_list/')
     edit_book_id=request.GET.get('id',None)
+    all_publisher_obj = models.publisher_list.objects.all()
     if edit_book_id:
         book_obj=models.Book_list.objects.get(book_id=edit_book_id)
         print(edit_book_id)
-        return render(request,'edit_book.html',{'book_obj':book_obj})
+        return render(request,'edit_book.html',{'book_obj':book_obj,'all_publisher_obj':all_publisher_obj})
     else:
         return HttpResponse('ERROR edit_book_id')
 
