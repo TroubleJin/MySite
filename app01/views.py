@@ -117,7 +117,7 @@ def edit_author(request):
         author_obj.name = author_name
         author_obj.book.set(books)
         author_obj.save()
-        return HttpResponse('修改名字完成')
+        return redirect('/author_list/')
     edit_id = request.GET.get('id')
     author_obj = models.Author.objects.get(id=edit_id)
     all_book_obj = models.Book_list.objects.all()
