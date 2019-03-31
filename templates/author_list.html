@@ -13,6 +13,7 @@
         <th>ID</th>
         <th>作者</th>
         <th>作品</th>
+        <th>操作</th>
     </tr>
     </thead>
     <tbody>
@@ -30,8 +31,14 @@
                     {% endif %}
                 {% endfor %}
             </td>
+            <td>
+                <a href="/remove_author/?id={{ author_obj.id }}">删除</a>
+                <a href="/edit_author/?id={{ author_obj.id }}">编辑</a>
+            </td>
         </tr>
     {% endfor %}
+    <a href="/add_author/">添加作者</a>
+
     </tbody>
 </table>
 </body>

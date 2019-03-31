@@ -28,4 +28,7 @@ urlpatterns = [
     path('remove_publisher/', views.remove_publisher),
     path('edit_publisher/', views.edit_publisher),
     path('author_list/', views.author_list),
+    path('add_author/', views.add_author),
+    path('remove_author/', views.remove_author),
+    path('edit_author/', views.edit_author),
 ]

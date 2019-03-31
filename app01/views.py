@@ -85,7 +85,40 @@ def author_list(request):
     all_author_obj = models.Author.objects.all()
     author_obj_1 = all_author_obj[0]
     #author_ojb.book是什么,是把作者对应数据库里面book_list表中的两条记录给你
-    print(author_obj_1.book.all()[0].book_publish_id)
-    for author_obj in author_obj_1.book.all():
-        print(author_obj.book_name)
+    # print(author_obj_1.book.all()[0].book_publish_id)
+    # for author_obj in author_obj_1.book.all():
+    #     print(author_obj.book_name)
     return render(request,'author_list.html',{'all_author_obj':all_author_obj})
+
+
+def add_author(request):
+    if request.method == 'POST':
+        new_author_name = request.POST.get('author')
+        books = request.POST.getlist('books')
+        print(new_author_name,books)
+        author_obj=models.Author.objects.create(name=new_author_name)
+        author_obj.book.set(books)
+        return  redirect('/author_list/')
+    all_book_obj = models.Book_list.objects.all()
+    return render(request,'add_author.html',{'all_book_obj':all_book_obj})
+
+def remove_author(request):
+    del_id=request.GET.get('id')
+    models.Author.objects.get(id=del_id).delete()
+    return redirect('/author_list/')
+
+def edit_author(request):
+    if request.method == 'POST':
+        author_id = request.POST.get('author_id')
+        author_name = request.POST.get('author')
+        books = request.POST.getlist('books')
+        print(author_id,author_name,books)
+        author_obj = models.Author.objects.get(id=author_id)
+        author_obj.name = author_name
+        author_obj.book.set(books)
+        author_obj.save()
+        return HttpResponse('修改名字完成')
+    edit_id = request.GET.get('id')
+    author_obj = models.Author.objects.get(id=edit_id)
+    all_book_obj = models.Book_list.objects.all()
+    return render(request,'edit_author.html',{'author_obj':author_obj,'all_book_obj':all_book_obj})
