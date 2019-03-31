@@ -80,3 +80,12 @@ def edit_publisher(request):
         num=request.GET.get('num',None)
         publisher_obj=models.publisher_list.objects.get(publisher_id=publisher_id)
         return render(request,'edit_publisher.html',{'publisher_obj':publisher_obj,'num':num})
+
+def author_list(request):
+    all_author_obj = models.Author.objects.all()
+    author_obj_1 = all_author_obj[0]
+    #author_ojb.book是什么,是把作者对应数据库里面book_list表中的两条记录给你
+    print(author_obj_1.book.all()[0].book_publish_id)
+    for author_obj in author_obj_1.book.all():
+        print(author_obj.book_name)
+    return render(request,'author_list.html',{'all_author_obj':all_author_obj})
