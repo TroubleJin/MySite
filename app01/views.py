@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 # Create your views here.
 from app01 import models
 from django.http import HttpResponse
+import os
 
 def book_list(request):
     ret = models.Book_list.objects.all()
@@ -122,3 +123,14 @@ def edit_author(request):
     author_obj = models.Author.objects.get(id=edit_id)
     all_book_obj = models.Book_list.objects.all()
     return render(request,'edit_author.html',{'author_obj':author_obj,'all_book_obj':all_book_obj})
+
+
+def download(request):
+    if request.method == 'POST':
+        download_path=request.POST.get('download_path')
+        hostname=request.POST.get('hostname')
+        env=request.POST.get('env')
+        os.chdir('/data/devops/ansible/deployments')
+        cmd_ansible = "ansible -i ../inventories/%s/internal_hosts %s -m fetch -a 'src=%s  dest=/data/'"%(env,hostname,download_path)
+        return HttpResponse(cmd_ansible)
+    return render(request,'download.html')

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件下载</title>
+</head>
+<body>
+<form action="/download/" method="post">
+    <p>
+        文件绝对路径： <input type="text" name="download_path">
+    </p>
+    <p>
+        服务器主机名： <input type="text" name="hostname">
+    </p>
+    <p>
+        服务器环境：
+        <select name="env">
+            <option value="staging">测试环境</option>
+            <option value="production">生产环境</option>
+        </select>
+    </p>
+    <input type="submit" value="下载">
+</form>
+</body>
+</html>
