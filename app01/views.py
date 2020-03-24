@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect
 # Create your views here.
 from app01 import models
+
 from django.http import HttpResponse
+from django.views import View
 
 def book_list(request):
     ret = models.Book_list.objects.all()
@@ -55,12 +57,23 @@ def publisher_list(request):
     all_publisher_obj=models.publisher_list.objects.all()
     return render(request,'publisher_list.html',{"publisher_list":all_publisher_obj})
 
-def add_publisher(request):
-    if request.method == "POST":
-        publisher_name=request.POST.get("publisher_name")
-        models.publisher_list.objects.create(publisher_name=publisher_name)
-        return redirect('/publisher_list/')
-    return render(request,'add_publisher.html')
+# def add_publisher(request):
+#     if request.method == "POST":
+#         publisher_name=request.POST.get("publisher_name")
+#         models.publisher_list.objects.create(publisher_name=publisher_name)
+#         return redirect('/publisher_list/')
+#     return render(request,'add_publisher.html')
+
+class AddPublisher(View):
+    def get(self,request):
+        print(request.path_info)
+        return render(request, 'add_publisher.html')
+    def post(self,request):
+        print(request.body)
+        if request.method == "POST":
+            publisher_name = request.POST.get("publisher_name")
+            models.publisher_list.objects.create(publisher_name=publisher_name)
+            return redirect('/publisher_list/')
 
 def remove_publisher(request):
     publisher_id=request.GET.get('id')
@@ -83,7 +96,7 @@ def edit_publisher(request):
 
 def author_list(request):
     all_author_obj = models.Author.objects.all()
-    author_obj_1 = all_author_obj[0]
+    # author_obj_1 = all_author_obj[0]
     #author_ojb.book是什么,是把作者对应数据库里面book_list表中的两条记录给你
     # print(author_obj_1.book.all()[0].book_publish_id)
     # for author_obj in author_obj_1.book.all():
@@ -122,3 +135,14 @@ def edit_author(request):
     author_obj = models.Author.objects.get(id=edit_id)
     all_book_obj = models.Book_list.objects.all()
     return render(request,'edit_author.html',{'author_obj':author_obj,'all_book_obj':all_book_obj})
+
+
+def upload(request):
+    if request.method == 'POST':
+        filename = request.FILES["upload_file"].name
+        with open(filename,'wb') as f:
+            for chunk in request.FILES["upload_file"].chunks():
+                f.write(chunk)
+        return HttpResponse('上传ok')
+    else:
+        return  render(request,'upload.html')
