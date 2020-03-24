@@ -31,5 +31,9 @@ urlpatterns = [
     path('add_author/', views.add_author),
     path('remove_author/', views.remove_author),
     path('edit_author/', views.edit_author),
+<<<<<<< HEAD
     path('upload/', views.upload),
+=======
+    path('download/', views.download),
+>>>>>>> eca806c00d01a778b2244c3d6ac250cee22bd603
 ]
