@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 # Create your views here.
 from app01 import models
-
+from django.urls import reverse
 from django.http import HttpResponse
 from django.views import View
 import os
@@ -76,8 +76,8 @@ class AddPublisher(View):
             models.publisher_list.objects.create(publisher_name=publisher_name)
             return redirect('/publisher_list/')
 
-def remove_publisher(request):
-    publisher_id=request.GET.get('id')
+def remove_publisher(request,publisher_id):
+    print(type(publisher_id),publisher_id)
     models.publisher_list.objects.get(publisher_id=publisher_id).delete()
     return redirect('/publisher_list/')
 
@@ -156,3 +156,15 @@ def download(request):
         cmd_ansible = "ansible -i ../inventories/%s/internal_hosts %s -m fetch -a 'src=%s  dest=/data/'"%(env,hostname,download_path)
         return HttpResponse(cmd_ansible)
     return render(request,'download.html')
+
+def json_test(request):
+    return render(request,'json_test.html')
+
+def index(request):
+    redirect_url = reverse('json_test')
+    return redirect(redirect_url)
+
+def transfer(request):
+    if request.method == 'POST':
+        return HttpResponse('转账成功')
+    return render(request,'transfer.html')

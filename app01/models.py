@@ -11,7 +11,11 @@ class Book_list(models.Model):
     book_name = models.CharField(null=True,max_length=64)
     book_description = models.CharField(null=True,max_length=64)
     book_country = models.CharField(null=True,max_length=64)
+    book_price = models.IntegerField(null=True,default=99)
     book_publish = models.ForeignKey(publisher_list,to_field='publisher_id',on_delete='CASCADE')
+
+    # def  __str__(self):
+    #     return '我是一个出版社对象%s'%self.book_name
 
 class Author(models.Model):
     id = models.AutoField(primary_key=True)
