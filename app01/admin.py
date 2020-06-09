@@ -1,10 +1,8 @@
 from django.contrib import admin
-from .models import Author
+from .models import t_author
 # Register your models here.
 
-@admin.register(Author)
+@admin.register(t_author)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', )
+    list_display = ('f_id', 'f_name', )
 
-
-# admin.site.register(Author, AuthorAdmin)

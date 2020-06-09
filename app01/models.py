@@ -2,22 +2,25 @@ from django.db import models
 
 # Create your models here.
 
-class publisher_list(models.Model):
-    publisher_id = models.AutoField(primary_key=True)
-    publisher_name = models.CharField(null=True,max_length=64)
+class t_publisher(models.Model):
+    f_id = models.AutoField(verbose_name=u"出版社id",primary_key=True)
+    f_publisher_name = models.CharField(verbose_name=u"出版社名称",null=True,max_length=64)
+    class Meta:
+        db_table = 't_publisher'
 
-class Book_list(models.Model):
-    book_id = models.AutoField(primary_key=True)
-    book_name = models.CharField(null=True,max_length=64)
-    book_description = models.CharField(null=True,max_length=64)
-    book_country = models.CharField(null=True,max_length=64)
-    book_price = models.IntegerField(null=True,default=99)
-    book_publish = models.ForeignKey(publisher_list,to_field='publisher_id',on_delete='CASCADE')
+class t_book(models.Model):
+    f_id = models.AutoField(verbose_name=u"书籍id",primary_key=True)
+    f_book_name = models.CharField(verbose_name=u"书籍名称",null=True,max_length=64)
+    f_book_description = models.CharField(verbose_name=u"书籍描述",null=True,max_length=64)
+    f_book_country = models.CharField(verbose_name=u"书籍国家",null=True,max_length=64)
+    f_book_price = models.IntegerField(verbose_name=u"书籍价格",null=True,default=99)
+    f_book_publish = models.ForeignKey(t_publisher,to_field='f_id',on_delete='CASCADE')
+    class Meta:
+        db_table = 't_book'
 
-    # def  __str__(self):
-    #     return '我是一个出版社对象%s'%self.book_name
-
-class Author(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=16,null=False,unique=True)
-    book = models.ManyToManyField(Book_list)
+class t_author(models.Model):
+    f_id = models.AutoField(verbose_name=u"作者id",primary_key=True)
+    f_name = models.CharField(verbose_name=u"作者姓名",max_length=16,null=False,unique=True)
+    f_book = models.ManyToManyField(t_book)
+    class Meta:
+        db_table = 't_author'
