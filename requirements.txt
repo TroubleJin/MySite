@@ -1,0 +1,13 @@
+click==7.1.2
+dataclasses==0.7
+Django==2.0
+django-extensions==2.2.9
+fastapi==0.55.1
+h11==0.9.0
+pydantic==1.5.1
+PyMySQL==0.9.3
+pytz==2020.1
+six==1.15.0
+starlette==0.13.2
+uvicorn==0.11.5
+websockets==8.1
