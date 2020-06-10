@@ -11,3 +11,7 @@ class AuthorAdmin(admin.ModelAdmin):
     list_filter = ('f_book__f_book_name', )
     #   顶部出现搜索框
     search_fields = ['f_name']
+
+
+
+

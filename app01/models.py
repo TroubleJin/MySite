@@ -27,3 +27,5 @@ class t_author(models.Model):
     class Meta:
         db_table = 't_author'
         verbose_name_plural = '作者'
+
+
