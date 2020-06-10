@@ -2,4 +2,4 @@
 __pycache__
 app01/__pycache__
 app01/migrations/
-env
+venv/
