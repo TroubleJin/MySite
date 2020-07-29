@@ -2,13 +2,24 @@ from django.shortcuts import render,redirect
 # Create your views here.
 from app01 import models
 from django.urls import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.views import View
 import os
 
-def book_list(request):
-    ret = models.Book_list.objects.all()
-    return render(request,'book_list.html',{'book_lists':ret})
+class Book(View):
+    def get(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+        print(pk)
+        if not pk: #群查询
+            ret = models.t_book.objects.all()
+            return render(request, 'book_list.html', {'book_lists': ret})
+        else:      #单查询
+            ret = models.t_book.objects.filter(f_id=pk)
+            return render(request, 'book_list.html', {'book_lists': ret})
+    def post(self,request,*args,**kwargs):
+        print(request.POST.dict())
+        models.t_book.objects.create(**request.POST.dict())
+        return JsonResponse({"status":0})
 
 def add_book(request):
     if request.method == "POST":
@@ -46,24 +57,18 @@ def edit_book(request):
         book_obj.save()
         return redirect('/book_list/')
     edit_book_id=request.GET.get('id',None)
-    all_publisher_obj = models.publisher_list.objects.all()
+    all_publisher_obj = models.t_publisher.objects.all()
     if edit_book_id:
-        book_obj=models.Book_list.objects.get(book_id=edit_book_id)
+        book_obj=models.t_book.objects.get(book_id=edit_book_id)
         print(edit_book_id)
         return render(request,'edit_book.html',{'book_obj':book_obj,'all_publisher_obj':all_publisher_obj})
     else:
         return HttpResponse('ERROR edit_book_id')
 
 def publisher_list(request):
-    all_publisher_obj=models.publisher_list.objects.all()
+    all_publisher_obj=models.t_publisher.objects.all()
     return render(request,'publisher_list.html',{"publisher_list":all_publisher_obj})
 
-# def add_publisher(request):
-#     if request.method == "POST":
-#         publisher_name=request.POST.get("publisher_name")
-#         models.publisher_list.objects.create(publisher_name=publisher_name)
-#         return redirect('/publisher_list/')
-#     return render(request,'add_publisher.html')
 
 class AddPublisher(View):
     def get(self,request):
@@ -73,30 +78,30 @@ class AddPublisher(View):
         print(request.body)
         if request.method == "POST":
             publisher_name = request.POST.get("publisher_name")
-            models.publisher_list.objects.create(publisher_name=publisher_name)
+            models.t_publisher.objects.create(publisher_name=publisher_name)
             return redirect('/publisher_list/')
 
 def remove_publisher(request,publisher_id):
     print(type(publisher_id),publisher_id)
-    models.publisher_list.objects.get(publisher_id=publisher_id).delete()
+    models.t_publisher.objects.get(publisher_id=publisher_id).delete()
     return redirect('/publisher_list/')
 
 def edit_publisher(request):
     if request.method == "POST":
         publisher_id = request.POST.get('publisher_id')
         publisher_name = request.POST.get('publisher_name')
-        publisher_obj = models.publisher_list.objects.get(publisher_id=publisher_id)
+        publisher_obj = models.t_publisher.objects.get(publisher_id=publisher_id)
         publisher_obj.publisher_name = publisher_name
         publisher_obj.save()
         return redirect('/publisher_list/')
     else:
         publisher_id=request.GET.get('id',None)
         num=request.GET.get('num',None)
-        publisher_obj=models.publisher_list.objects.get(publisher_id=publisher_id)
+        publisher_obj=models.t_publisher.objects.get(publisher_id=publisher_id)
         return render(request,'edit_publisher.html',{'publisher_obj':publisher_obj,'num':num})
 
 def author_list(request):
-    all_author_obj = models.Author.objects.all()
+    all_author_obj = models.t_author.objects.all()
     # author_obj_1 = all_author_obj[0]
     #author_ojb.book是什么,是把作者对应数据库里面book_list表中的两条记录给你
     # print(author_obj_1.book.all()[0].book_publish_id)
@@ -110,10 +115,10 @@ def add_author(request):
         new_author_name = request.POST.get('author')
         books = request.POST.getlist('books')
         print(new_author_name,books)
-        author_obj=models.Author.objects.create(name=new_author_name)
+        author_obj=models.t_author.objects.create(name=new_author_name)
         author_obj.book.set(books)
         return  redirect('/author_list/')
-    all_book_obj = models.Book_list.objects.all()
+    all_book_obj = models.t_book.objects.all()
     return render(request,'add_author.html',{'all_book_obj':all_book_obj})
 
 def remove_author(request):
@@ -168,3 +173,20 @@ def transfer(request):
     if request.method == 'POST':
         return HttpResponse('转账成功')
     return render(request,'transfer.html')
+
+#   drf框架封装风格
+from rest_framework.views import APIView
+from rest_framework.response import  Response
+from rest_framework.request import Request
+from rest_framework.serializers import Serializer
+from rest_framework.settings import APISettings
+from rest_framework.filters import SearchFilter #过滤器
+from rest_framework.pagination import PageNumberPagination
+#   三大认证
+from rest_framework.authentication import TokenAuthentication   #
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import SimpleRateThrottle
+
+class Car(APIView):
+    def get(self,request,*args,**kwargs):
+        pass

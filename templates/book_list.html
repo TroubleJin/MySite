@@ -19,10 +19,10 @@
     {% for book in book_lists %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ book.book_name }}</td>
-            <td>{{ book.book_description }}</td>
-            <td>{{ book.book_country }}</td>
-            <td>{{ book.book_publish.publisher_name }}</td>
+            <td>{{ book.f_book_name }}</td>
+            <td>{{ book.f_book_description }}</td>
+            <td>{{ book.f_book_country }}</td>
+            <td>{{ book.f_book_publish.f_publisher_name }}</td>
             <td>
                 <a href="/remove_book/?id={{ book.book_id }}">删除</a>
                 <a href="/edit_book/?id={{ book.book_id }}">编辑</a>

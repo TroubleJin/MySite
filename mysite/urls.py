@@ -18,8 +18,10 @@ from django.urls import path,re_path,include
 from app01 import views
 
 urlpatterns = [
-    path('book_list/', views.book_list),
-    path('add_book/', views.add_book),
+    path(r'books/', views.Book.as_view()),
+    # 单查群接口
+    path(r'books/<pk>/', views.Book.as_view()),
+    re_path('add_book/', views.add_book),
     path('remove_book/', views.remove_book),
     path('edit_book/', views.edit_book),
     path('admin/', admin.site.urls),
