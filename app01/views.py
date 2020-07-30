@@ -5,21 +5,33 @@ from django.urls import reverse
 from django.http import HttpResponse,JsonResponse
 from django.views import View
 import os
+#   drf框架封装风格
+from rest_framework.views import APIView
+from rest_framework.response import  Response
+from rest_framework.request import Request
+from rest_framework.serializers import Serializer
+from rest_framework.settings import APISettings
+from rest_framework.filters import SearchFilter #过滤器
+from rest_framework.pagination import PageNumberPagination
+#   三大认证
+from rest_framework.authentication import TokenAuthentication   #
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import SimpleRateThrottle
+from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
 
-class Book(View):
+class Book(APIView):
+    parser_classes = [JSONParser]
     def get(self,request,*args,**kwargs):
         pk = kwargs.get('pk')
-        print(pk)
-        if not pk: #群查询
-            ret = models.t_book.objects.all()
-            return render(request, 'book_list.html', {'book_lists': ret})
-        else:      #单查询
-            ret = models.t_book.objects.filter(f_id=pk)
-            return render(request, 'book_list.html', {'book_lists': ret})
+        if pk:
+            book_obj = models.t_book.objects.get(pk=pk)
+        print(request.query_params)
+        print(request.data)
+        return Response('get ok')
     def post(self,request,*args,**kwargs):
-        print(request.POST.dict())
-        models.t_book.objects.create(**request.POST.dict())
-        return JsonResponse({"status":0})
+        print(request.query_params)
+        print(request.data)
+        return Response('post ok')
 
 def add_book(request):
     if request.method == "POST":
@@ -174,19 +186,5 @@ def transfer(request):
         return HttpResponse('转账成功')
     return render(request,'transfer.html')
 
-#   drf框架封装风格
-from rest_framework.views import APIView
-from rest_framework.response import  Response
-from rest_framework.request import Request
-from rest_framework.serializers import Serializer
-from rest_framework.settings import APISettings
-from rest_framework.filters import SearchFilter #过滤器
-from rest_framework.pagination import PageNumberPagination
-#   三大认证
-from rest_framework.authentication import TokenAuthentication   #
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.throttling import SimpleRateThrottle
 
-class Car(APIView):
-    def get(self,request,*args,**kwargs):
-        pass
+
