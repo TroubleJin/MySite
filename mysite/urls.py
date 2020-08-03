@@ -38,4 +38,7 @@ urlpatterns = [
     path('json_test111/', views.json_test,name='json_test'),
     path('index/', views.index),
     path('transfer/', views.transfer),
+    path(r'user/', views.User.as_view()),
+    # 单查群接口
+    path(r'user/<pk>/', views.User.as_view()),
 ]

@@ -4,12 +4,12 @@ from app01 import models
 from django.urls import reverse
 from django.http import HttpResponse,JsonResponse
 from django.views import View
+from . import serializers
 import os
 #   drf框架封装风格
 from rest_framework.views import APIView
 from rest_framework.response import  Response
 from rest_framework.request import Request
-from rest_framework.serializers import Serializer
 from rest_framework.settings import APISettings
 from rest_framework.filters import SearchFilter #过滤器
 from rest_framework.pagination import PageNumberPagination
@@ -187,4 +187,19 @@ def transfer(request):
     return render(request,'transfer.html')
 
 
-
+class User(APIView):
+    def get(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+        if pk:
+            user_obj = models.t_user.objects.get(f_id=pk)
+            data = {
+                'status': 0,
+                'result': serializers.UserSerializer(user_obj).data
+            }
+        else:
+           user_obj = models.t_user.objects.all()
+           data = {
+               'status': 0,
+               'result': serializers.UserSerializer(user_obj,many=True).data
+           }
+        return Response(data=data)

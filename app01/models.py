@@ -29,3 +29,17 @@ class t_author(models.Model):
         verbose_name_plural = '作者'
 
 
+class t_user(models.Model):
+    SEX_CHOICES = [
+        [0,"男"],
+        [1,"女"],
+    ]
+    f_id = models.AutoField(verbose_name='用户id',primary_key=True)
+    f_name = models.CharField(verbose_name='用户名称',max_length=64)
+    f_password = models.CharField(verbose_name='用户密码',max_length=32)
+    f_phone = models.CharField(verbose_name='手机号',max_length=11)
+    f_sex = models.IntegerField(choices=SEX_CHOICES,default=0)
+    class Meta:
+        db_table = 't_user'
+        verbose_name_plural = '用户'
+

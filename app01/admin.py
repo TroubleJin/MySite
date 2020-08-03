@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import t_author,t_book,t_publisher
+from .models import t_author,t_book,t_publisher,t_user
 # Register your models here.
 
 @admin.register(t_author)
@@ -28,7 +28,8 @@ class BookAdmin(admin.ModelAdmin):
     search_fields = ['f_book_name']
 
 
-
-
+@admin.register(t_user)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('f_name','f_password','f_phone','f_sex')
 
 
