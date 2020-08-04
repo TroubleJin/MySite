@@ -203,3 +203,24 @@ class User(APIView):
                'result': serializers.UserSerializer(user_obj,many=True).data
            }
         return Response(data=data)
+    #   只考虑单增
+    def post(self,request,*args,**kwargs):
+        request_data = request.data
+        if not isinstance(request_data,dict):
+            return  Response({
+                'status': 1,
+                'result': '数据有误'
+            })
+        #   数据合法,但数据内容不一定合法
+        user_serializes = serializers.UserDeserializer(data=request_data)
+        user_serializes.is_valid(raise_exception=True)
+        user_obj = user_serializes.save()
+        return Response({
+            'status': 0,
+            'result': serializers.UserSerializer(user_obj).data
+        })
+        # else:
+        #     return Response({
+        #         'status': 1,
+        #         'result':  user_serializes.errors
+        #     })
