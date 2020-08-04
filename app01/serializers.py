@@ -26,23 +26,23 @@ class UserDeserializer(serializers.Serializer):
     #  自定义有校验规则的反序列化字段
     re_f_password = serializers.CharField(max_length=32)
 
-    #   字段级反序列化
-    # def validate_f_name(self,value):
-    #     if '0' in value.lower():
-    #         raise exceptions.ValidationError('名字错误')
-    #     return value
-    #
-    # def validate_f_password(self, value):
-    #     if '0' in value.lower():
-    #         raise exceptions.ValidationError('密码带0,不行')
-    #     return value
-    #
-    # #   对象级验证
-    # def validate(self, attrs):
-    #     # 必须pop走,不能留下多余字段
-    #     if attrs.get('f_password') != attrs.pop('re_f_password'):
-    #         raise  exceptions.ValidationError('两次密码不一致')
-    #     return attrs
+    #  字段级反序列化
+    def validate_f_name(self,value):
+        if '0' in value.lower():
+            raise exceptions.ValidationError('名字错误')
+        return value
+
+    def validate_f_password(self, value):
+        if '0' in value.lower():
+            raise exceptions.ValidationError('密码带0,不行')
+        return value
+
+    #   对象级验证
+    def validate(self, attrs):
+        # 必须pop走,不能留下多余字段
+        if attrs.get('f_password') != attrs.pop('re_f_password'):
+            raise  exceptions.ValidationError('两次密码不一致')
+        return attrs
 
     def create(self, validated_data):
         return models.t_user.objects.create(**validated_data)
