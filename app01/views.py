@@ -18,6 +18,7 @@ from rest_framework.authentication import TokenAuthentication   #
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
+from rest_framework import exceptions
 
 
 def add_book(request):
@@ -234,17 +235,39 @@ class Publish(APIView):
         return  Response('ok')
 
 class Book(APIView):
+    # 单查群差
     def get(self,request,*args,**kwargs):
         pk = kwargs.get('pk')
         if pk:
             book_obj = models.t_book.objects.get(pk=pk)
+            many = False
         else:
             book_obj = models.t_book.objects.all()
-        book_data = serializers.BookSerializer(book_obj,many=True).data
+            many = True
+        book_data = serializers.BookSerializer(book_obj,many=many).data
         return Response(book_data)
+
+    # 单增群增
     def post(self,request,*args,**kwargs):
         request_data = request.data
-        book_serializers = serializers.BookSerializer(data=request_data)
+        if isinstance(request_data,dict):
+            many = False
+            print(123)
+        elif isinstance(request_data,list):
+            many = True
+        else:
+            raise  exceptions.ValidationError('类型错误')
+        book_serializers = serializers.BookSerializer(data=request_data,many=many)
         book_serializers.is_valid(raise_exception=True)
         book_obj = book_serializers.save()
-        return Response(serializers.BookSerializer(book_obj).data)
+        return Response(serializers.BookSerializer(book_obj,many=many).data)
+
+    def delete(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+        if pk:
+            pks = [pk]
+        else:
+            pks = request.data.get('pks')
+        if models.t_book.objects.filter(pk__in=pks).delete():
+            return  Response('删除成功')
+        return  Response('删除失败')
