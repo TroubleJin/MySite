@@ -19,19 +19,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
 
-class Book(APIView):
-    parser_classes = [JSONParser]
-    def get(self,request,*args,**kwargs):
-        pk = kwargs.get('pk')
-        if pk:
-            book_obj = models.t_book.objects.get(pk=pk)
-        print(request.query_params)
-        print(request.data)
-        return Response('get ok')
-    def post(self,request,*args,**kwargs):
-        print(request.query_params)
-        print(request.data)
-        return Response('post ok')
 
 def add_book(request):
     if request.method == "POST":
@@ -224,3 +211,40 @@ class User(APIView):
         #         'status': 1,
         #         'result':  user_serializes.errors
         #     })
+
+
+class Publish(APIView):
+    def get(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+        if pk:
+            user_obj = models.t_publisher.objects.get(f_id=pk)
+            data = {
+                'status': 0,
+                'result': serializers.UserSerializer(user_obj).data
+            }
+        else:
+           user_obj = models.t_user.objects.all()
+           data = {
+               'status': 0,
+               'result': serializers.UserSerializer(user_obj,many=True).data
+           }
+        return Response(data=data)
+    def post(self,request,*args,**kwargs):
+        request_data = request.data
+        return  Response('ok')
+
+class Book(APIView):
+    def get(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+        if pk:
+            book_obj = models.t_book.objects.get(pk=pk)
+        else:
+            book_obj = models.t_book.objects.all()
+        book_data = serializers.BookSerializer(book_obj,many=True).data
+        return Response(book_data)
+    def post(self,request,*args,**kwargs):
+        request_data = request.data
+        book_serializers = serializers.BookSerializer(data=request_data)
+        book_serializers.is_valid(raise_exception=True)
+        book_obj = book_serializers.save()
+        return Response(serializers.BookSerializer(book_obj).data)

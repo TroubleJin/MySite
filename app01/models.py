@@ -16,6 +16,16 @@ class t_book(models.Model):
     f_book_country = models.CharField(verbose_name=u"书籍国家",null=True,max_length=64)
     f_book_price = models.IntegerField(verbose_name=u"书籍价格",null=True,default=99)
     f_book_publish = models.ForeignKey(t_publisher,to_field='f_id',on_delete='CASCADE')
+
+    # 自定义序列化字段
+    @property
+    def f_publish_name(self):
+        return  self.f_book_publish.f_publisher_name
+
+    @property
+    def f_author_name(self):
+        return self.t_author_set.values('f_name',)
+
     class Meta:
         db_table = 't_book'
         verbose_name_plural = '书籍'
@@ -23,6 +33,7 @@ class t_book(models.Model):
 class t_author(models.Model):
     f_id = models.AutoField(verbose_name=u"作者id",primary_key=True)
     f_name = models.CharField(verbose_name=u"作者姓名",max_length=16,null=False,unique=True)
+    # 用于反向查詢
     f_book = models.ManyToManyField(t_book)
     class Meta:
         db_table = 't_author'
