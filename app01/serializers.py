@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework import exceptions
+from rest_framework.serializers import ListSerializer
 from . import models
 
 
@@ -48,10 +49,20 @@ class UserDeserializer(serializers.Serializer):
     def create(self, validated_data):
         return models.t_user.objects.create(**validated_data)
 
+class BookListSerializer(ListSerializer):
+    def update(self, instance, validated_data):
+        # print(instance)  # 要更新的对象们
+        # print(validated_data)  # 更新的对象对应的数据们
+        # print(self.child)  # 服务的模型序列化类 - V2BookModelSerializer
+        for index, obj in enumerate(instance):
+            self.child.update(obj, validated_data[index])
+        return instance
+
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         # 序列化关联的model的类
         model = models.t_book
+        list_serializer_class = BookListSerializer
         # 参与序列化的所有字段
         # fields = '__all__'
         # 排除字段

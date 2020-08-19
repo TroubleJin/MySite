@@ -252,7 +252,6 @@ class Book(APIView):
         request_data = request.data
         if isinstance(request_data,dict):
             many = False
-            print(123)
         elif isinstance(request_data,list):
             many = True
         else:
@@ -278,12 +277,89 @@ class Book(APIView):
         request_data = request.data
         pk = kwargs.get('pk')
         old_book_obj = models.t_book.objects.filter(pk=pk).first()
-        book_serializers = serializers.BookSerializer(instance=old_book_obj,data=request_data)
+        # partial设置是否校验所有字段
+        book_serializers = serializers.BookSerializer(instance=old_book_obj,data=request_data,partial=True)
         book_serializers.is_valid(raise_exception=True)
         #   检验通过完成数据更新
         book_obj = book_serializers.save()
         return Response(serializers.BookSerializer(book_obj).data)
 
     #  单体部改
-    def pathch(self,request,*args,**kwargs):
-        pass
+    def patch(self,request,*args,**kwargs):
+        # request_data = request.data
+        # pk = kwargs.get('pk')
+        # pks = []
+        # if not pk and isinstance(request_data,list): #群改
+        #     for data in request_data:
+        #         pk = data.get('pk')
+        #         pks.append(pk)
+        #         old_book_obj = models.t_book.objects.filter(pk=pk).first()
+        #         book_serializers = serializers.BookSerializer(instance=old_book_obj,data=data,partial=True)
+        #         book_serializers.is_valid(raise_exception=True)
+        #         #   检验通过完成数据更新
+        #         book_obj = book_serializers.save()
+        #     book_objs = models.t_book.objects.filter(f_id__in=pks)
+        #     return Response(serializers.BookSerializer(book_objs,many=True).data)
+        # elif pk and isinstance(request_data,dict): #单改
+        #     old_book_obj = models.t_book.objects.filter(pk=pk).first()
+        #     book_serializers = serializers.BookSerializer(instance=old_book_obj, data=request_data, partial=True)
+        #     book_serializers.is_valid(raise_exception=True)
+        #     #   检验通过完成数据更新
+        #     book_obj = book_serializers.save()
+        #     return Response(serializers.BookSerializer(book_obj).data)
+        # else:
+        #     return Response('数据有误')
+
+
+
+        request_data = request.data
+        pk = kwargs.get('pk')
+
+        # 将单改，群改的数据都格式化成 pks=[要需要的对象主键标识] | request_data=[每个要修改的对象对应的修改数据]
+        if pk and isinstance(request_data, dict):  # 单改
+            pks = [pk, ]
+            request_data = [request_data, ]
+        elif not pk and isinstance(request_data, list):  # 群改
+            pks = []
+            for dic in request_data:  # 遍历前台数据[{pk:1, name:123}, {pk:3, price:7}, {pk:7, publish:2}]，拿一个个字典
+                pk = dic.pop('pk', None)
+                if pk:
+                    pks.append(pk)
+                else:
+                    return Response({
+                        'status': 1,
+                        'msg': '数据有误',
+                    })
+        else:
+            return Response({
+                'status': 1,
+                'msg': '数据有误',
+            })
+        # pks与request_data数据筛选，
+        # 1）将pks中的没有对应数据的pk与数据已删除的pk移除，request_data对应索引位上的数据也移除
+        # 2）将合理的pks转换为 objs
+        objs = []
+        new_request_data = []
+        for index, pk in enumerate(pks):
+            try:
+                # pk对应的数据合理，将合理的对象存储
+                obj = models.t_book.objects.get(f_id=pk)
+                objs.append(obj)
+                # 对应索引的数据就需要保存下来
+                new_request_data.append(request_data[index])
+            except:
+                # 重点：反面教程 - pk对应的数据有误，将对应索引的data中request_data中移除
+                # index = pks.index(pk)
+                # request_data.pop(index)
+                continue
+        print(objs)
+        print(new_request_data)
+        book_ser = serializers.BookSerializer(instance=objs, data=new_request_data, partial=True, many=True)
+        book_ser.is_valid(raise_exception=True)
+        book_objs = book_ser.save()
+
+        return Response({
+            'status': 0,
+            'msg': 'ok',
+            'results': serializers.BookSerializer(book_objs, many=True).data
+        })
