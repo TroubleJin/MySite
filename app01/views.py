@@ -262,6 +262,7 @@ class Book(APIView):
         book_obj = book_serializers.save()
         return Response(serializers.BookSerializer(book_obj,many=many).data)
 
+    # 单群删除
     def delete(self,request,*args,**kwargs):
         pk = kwargs.get('pk')
         if pk:
@@ -271,3 +272,18 @@ class Book(APIView):
         if models.t_book.objects.filter(pk__in=pks).delete():
             return  Response('删除成功')
         return  Response('删除失败')
+
+    #   单群体改
+    def put(self,request,*args,**kwargs):
+        request_data = request.data
+        pk = kwargs.get('pk')
+        old_book_obj = models.t_book.objects.filter(pk=pk).first()
+        book_serializers = serializers.BookSerializer(instance=old_book_obj,data=request_data)
+        book_serializers.is_valid(raise_exception=True)
+        #   检验通过完成数据更新
+        book_obj = book_serializers.save()
+        return Response(serializers.BookSerializer(book_obj).data)
+
+    #  单体部改
+    def pathch(self,request,*args,**kwargs):
+        pass
