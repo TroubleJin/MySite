@@ -19,6 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
 from rest_framework import exceptions
+from utils.apiresponse import ApiResponse
 
 
 def add_book(request):
@@ -244,8 +245,7 @@ class Book(APIView):
         else:
             book_obj = models.t_book.objects.all()
             many = True
-        book_data = serializers.BookSerializer(book_obj,many=many).data
-        return Response(book_data)
+        return ApiResponse(http_status=201,results=serializers.BookSerializer(book_obj,many=many).data)
 
     # 单增群增
     def post(self,request,*args,**kwargs):
@@ -259,7 +259,7 @@ class Book(APIView):
         book_serializers = serializers.BookSerializer(data=request_data,many=many)
         book_serializers.is_valid(raise_exception=True)
         book_obj = book_serializers.save()
-        return Response(serializers.BookSerializer(book_obj,many=many).data)
+        return ApiResponse(results=serializers.BookSerializer(book_obj))
 
     # 单群删除
     def delete(self,request,*args,**kwargs):
