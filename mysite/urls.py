@@ -21,11 +21,13 @@ urlpatterns = [
     path(r'books/', views.Book.as_view()),
     # 单查群接口
     path(r'books/<pk>/', views.Book.as_view()),
+    path(r'publishers/', views.Publisher.as_view()),
+    # 单查群接口
+    path(r'publishers/<pk>/', views.Publisher.as_view()),
     re_path('add_book/', views.add_book),
     path('remove_book/', views.remove_book),
     path('edit_book/', views.edit_book),
     path('admin/', admin.site.urls),
-    path('publisher_list/', views.publisher_list),
     path('add_publisher/', views.AddPublisher.as_view()),
     path(r'remove_publisher/page<publisher_id>', views.remove_publisher),
     path('edit_publisher/', views.edit_publisher),

@@ -102,5 +102,11 @@ class BookDeserializer(serializers.ModelSerializer):
         model = models.t_book
         fields = ('f_book_name', 'f_book_description', 'f_book_country', 'f_book_price', 'f_book_publish')
 
+class PublisherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.t_publisher
+        fields = ('f_id','f_publisher_name')
+
+
 
 

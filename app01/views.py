@@ -18,6 +18,7 @@ from rest_framework.authentication import TokenAuthentication   #
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
+from rest_framework.generics import GenericAPIView
 from rest_framework import exceptions
 from utils.apiresponse import ApiResponse
 
@@ -65,10 +66,6 @@ def edit_book(request):
         return render(request,'edit_book.html',{'book_obj':book_obj,'all_publisher_obj':all_publisher_obj})
     else:
         return HttpResponse('ERROR edit_book_id')
-
-def publisher_list(request):
-    all_publisher_obj=models.t_publisher.objects.all()
-    return render(request,'publisher_list.html',{"publisher_list":all_publisher_obj})
 
 
 class AddPublisher(View):
@@ -214,27 +211,6 @@ class User(APIView):
         #         'result':  user_serializes.errors
         #     })
 
-
-class Publish(APIView):
-    def get(self,request,*args,**kwargs):
-        pk = kwargs.get('pk')
-        if pk:
-            user_obj = models.t_publisher.objects.get(f_id=pk)
-            data = {
-                'status': 0,
-                'result': serializers.UserSerializer(user_obj).data
-            }
-        else:
-           user_obj = models.t_user.objects.all()
-           data = {
-               'status': 0,
-               'result': serializers.UserSerializer(user_obj,many=True).data
-           }
-        return Response(data=data)
-    def post(self,request,*args,**kwargs):
-        request_data = request.data
-        return  Response('ok')
-
 class Book(APIView):
     # 单查群差
     def get(self,request,*args,**kwargs):
@@ -245,7 +221,7 @@ class Book(APIView):
         else:
             book_obj = models.t_book.objects.all()
             many = True
-        return ApiResponse(http_status=201,results=serializers.BookSerializer(book_obj,many=many).data)
+        return ApiResponse(results=serializers.BookSerializer(book_obj,many=many).data)
 
     # 单增群增
     def post(self,request,*args,**kwargs):
@@ -363,3 +339,18 @@ class Book(APIView):
             'msg': 'ok',
             'results': serializers.BookSerializer(book_objs, many=True).data
         })
+
+
+class Publisher(GenericAPIView):
+    queryset = models.t_publisher.objects.all()
+    serializer_class = serializers.PublisherSerializer
+
+    def get(self,request,*args,**kwargs):
+        publisher_query = self.get_object()
+        publisher_serialize = self.get_serializer(publisher_query)
+        return  ApiResponse(results=publisher_serialize.data)
+
+    def list(self,request,*args,**kwargs):
+        publisher_query = self.get_queryset()
+        publisher_serialize = self.get_serializer(publisher_query,many=True)
+        return  ApiResponse(results=publisher_serialize.data)
