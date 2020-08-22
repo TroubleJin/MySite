@@ -18,7 +18,8 @@ from rest_framework.authentication import TokenAuthentication   #
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView,ListCreateAPIView,RetrieveUpdateAPIView
+from rest_framework.mixins import ListModelMixin,CreateModelMixin,RetrieveModelMixin,UpdateModelMixin
 from rest_framework import exceptions
 from utils.apiresponse import ApiResponse
 
@@ -341,16 +342,7 @@ class Book(APIView):
         })
 
 
-class Publisher(GenericAPIView):
-    queryset = models.t_publisher.objects.all()
+class Publisher(ListCreateAPIView,RetrieveUpdateAPIView):
+    queryset = models.t_publisher.objects.filter()
     serializer_class = serializers.PublisherSerializer
 
-    def get(self,request,*args,**kwargs):
-        publisher_query = self.get_object()
-        publisher_serialize = self.get_serializer(publisher_query)
-        return  ApiResponse(results=publisher_serialize.data)
-
-    def list(self,request,*args,**kwargs):
-        publisher_query = self.get_queryset()
-        publisher_serialize = self.get_serializer(publisher_query,many=True)
-        return  ApiResponse(results=publisher_serialize.data)
