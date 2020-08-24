@@ -103,10 +103,21 @@ class BookDeserializer(serializers.ModelSerializer):
         fields = ('f_book_name', 'f_book_description', 'f_book_country', 'f_book_price', 'f_book_publish')
 
 class PublisherSerializer(serializers.ModelSerializer):
+    f_country = serializers.SerializerMethodField()
     class Meta:
         model = models.t_publisher
-        fields = ('f_id','f_publisher_name')
-
+        fields = ('f_id','f_publisher_name','f_country')
+        extra_kwargs = {
+            "f_publisher_name": {
+                "required": True,
+                "error_messages": {
+                    "min_length": 1,
+                    "required": "出版社名称必须填写"
+                }
+            },
+        }
+    def get_f_country(self,obj):
+        return '中国'
 
 
 

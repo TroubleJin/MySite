@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path,re_path,include
 from app01 import views
 
+
 urlpatterns = [
     path(r'books/', views.Book.as_view()),
     # 单查群接口

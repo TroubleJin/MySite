@@ -149,4 +149,13 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
     ],
     'EXCEPTION_HANDLER': 'app01.exception.exception_handler',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'app01.authorizations.Authentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
 }
+
+##  配置自定义user表
+# AUTH_USER_MODEL = 'app01.User'

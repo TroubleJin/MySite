@@ -15,10 +15,11 @@ from rest_framework.filters import SearchFilter #过滤器
 from rest_framework.pagination import PageNumberPagination
 #   三大认证
 from rest_framework.authentication import TokenAuthentication   #
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
 from rest_framework.generics import GenericAPIView,ListCreateAPIView,RetrieveUpdateAPIView
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin,CreateModelMixin,RetrieveModelMixin,UpdateModelMixin
 from rest_framework import exceptions
 from utils.apiresponse import ApiResponse
@@ -342,7 +343,8 @@ class Book(APIView):
         })
 
 
+from .permissions import Permission
 class Publisher(ListCreateAPIView,RetrieveUpdateAPIView):
     queryset = models.t_publisher.objects.filter()
     serializer_class = serializers.PublisherSerializer
-
+    permission_classes = [Permission]

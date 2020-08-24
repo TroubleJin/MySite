@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractBaseUser
 # Create your models here.
 
 class t_publisher(models.Model):
@@ -54,3 +54,5 @@ class t_user(models.Model):
         db_table = 't_user'
         verbose_name_plural = '用户'
 
+class User(AbstractBaseUser):
+    mobile = models.CharField(max_length=11,unique=True)
