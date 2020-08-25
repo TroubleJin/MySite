@@ -85,7 +85,7 @@ class BookSerializer(serializers.ModelSerializer):
             # 'f_book_price':{'read_only': True},
             # 'f_publish_name':{'read_only': True},
             # 'f_author_name':{'read_only': True},
-            'f_book_publish':{'write_only': True},
+            # 'f_book_publish':{'write_only': True},
 
         }
     def validate_f_book_name(self,value):

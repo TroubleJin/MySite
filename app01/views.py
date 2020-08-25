@@ -15,167 +15,21 @@ from rest_framework.filters import SearchFilter #过滤器
 from rest_framework.pagination import PageNumberPagination
 #   三大认证
 from rest_framework.authentication import TokenAuthentication   #
-from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly,IsAdminUser
 from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.parsers import JSONParser,FormParser,MultiPartParser
 from rest_framework.generics import GenericAPIView,ListCreateAPIView,RetrieveUpdateAPIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin,CreateModelMixin,RetrieveModelMixin,UpdateModelMixin
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import exceptions
 from utils.apiresponse import ApiResponse
-
-
-def add_book(request):
-    if request.method == "POST":
-        print('add')
-        new_book_name = request.POST['book_name']
-        new_book_description = request.POST['book_description']
-        new_book_country = request.POST['book_country']
-        publisher_id = request.POST.get('publisher')
-        # pub_obj=models.publisher_list.objects.get(publisher_id=publisher_id)
-        models.Book_list.objects.create(book_name=new_book_name, book_country=new_book_country,
-                                     book_description=new_book_description,book_publish_id=publisher_id)
-        return redirect('/book_list/')
-    all_pub_obj=models.publisher_list.objects.all()
-    return render(request, 'add_book.html',{"all_pub_obj":all_pub_obj})
-
-def remove_book(request):
-    print('delete')
-    print(request.GET)
-    del_book_id=request.GET.get('id',None)
-    if  del_book_id:
-        models.Book_list.objects.get(book_id=del_book_id).delete()
-    else:
-        print('没有找到删除的id')
-    return redirect('/book_list/')
-
-def edit_book(request):
-    if request.method == 'POST':
-        edit_book_id=request.POST.get('book_id')
-        print(request.POST)
-        book_obj = models.Book_list.objects.get(book_id=edit_book_id)
-        book_obj.book_name=request.POST.get('book_name')
-        book_obj.book_description=request.POST.get('book_description')
-        book_obj.book_country=request.POST.get('book_country')
-        book_obj.book_publish_id = request.POST.get('publisher')
-        book_obj.save()
-        return redirect('/book_list/')
-    edit_book_id=request.GET.get('id',None)
-    all_publisher_obj = models.t_publisher.objects.all()
-    if edit_book_id:
-        book_obj=models.t_book.objects.get(book_id=edit_book_id)
-        print(edit_book_id)
-        return render(request,'edit_book.html',{'book_obj':book_obj,'all_publisher_obj':all_publisher_obj})
-    else:
-        return HttpResponse('ERROR edit_book_id')
-
-
-class AddPublisher(View):
-    def get(self,request):
-        print(request.path_info)
-        return render(request, 'add_publisher.html')
-    def post(self,request):
-        print(request.body)
-        if request.method == "POST":
-            publisher_name = request.POST.get("publisher_name")
-            models.t_publisher.objects.create(publisher_name=publisher_name)
-            return redirect('/publisher_list/')
-
-def remove_publisher(request,publisher_id):
-    print(type(publisher_id),publisher_id)
-    models.t_publisher.objects.get(publisher_id=publisher_id).delete()
-    return redirect('/publisher_list/')
-
-def edit_publisher(request):
-    if request.method == "POST":
-        publisher_id = request.POST.get('publisher_id')
-        publisher_name = request.POST.get('publisher_name')
-        publisher_obj = models.t_publisher.objects.get(publisher_id=publisher_id)
-        publisher_obj.publisher_name = publisher_name
-        publisher_obj.save()
-        return redirect('/publisher_list/')
-    else:
-        publisher_id=request.GET.get('id',None)
-        num=request.GET.get('num',None)
-        publisher_obj=models.t_publisher.objects.get(publisher_id=publisher_id)
-        return render(request,'edit_publisher.html',{'publisher_obj':publisher_obj,'num':num})
-
-def author_list(request):
-    all_author_obj = models.t_author.objects.all()
-    # author_obj_1 = all_author_obj[0]
-    #author_ojb.book是什么,是把作者对应数据库里面book_list表中的两条记录给你
-    # print(author_obj_1.book.all()[0].book_publish_id)
-    # for author_obj in author_obj_1.book.all():
-    #     print(author_obj.book_name)
-    return render(request,'author_list.html',{'all_author_obj':all_author_obj})
-
-
-def add_author(request):
-    if request.method == 'POST':
-        new_author_name = request.POST.get('author')
-        books = request.POST.getlist('books')
-        print(new_author_name,books)
-        author_obj=models.t_author.objects.create(name=new_author_name)
-        author_obj.book.set(books)
-        return  redirect('/author_list/')
-    all_book_obj = models.t_book.objects.all()
-    return render(request,'add_author.html',{'all_book_obj':all_book_obj})
-
-def remove_author(request):
-    del_id=request.GET.get('id')
-    models.Author.objects.get(id=del_id).delete()
-    return redirect('/author_list/')
-
-def edit_author(request):
-    if request.method == 'POST':
-        author_id = request.POST.get('author_id')
-        author_name = request.POST.get('author')
-        books = request.POST.getlist('books')
-        print(author_id,author_name,books)
-        author_obj = models.Author.objects.get(id=author_id)
-        author_obj.name = author_name
-        author_obj.book.set(books)
-        author_obj.save()
-        return redirect('/author_list/')
-    edit_id = request.GET.get('id')
-    author_obj = models.Author.objects.get(id=edit_id)
-    all_book_obj = models.Book_list.objects.all()
-    return render(request,'edit_author.html',{'author_obj':author_obj,'all_book_obj':all_book_obj})
-
-
-def upload(request):
-    if request.method == 'POST':
-        filename = request.FILES["upload_file"].name
-        with open(filename,'wb') as f:
-            for chunk in request.FILES["upload_file"].chunks():
-                f.write(chunk)
-        return HttpResponse('上传ok')
-    else:
-        return  render(request,'upload.html')
-def download(request):
-    if request.method == 'POST':
-        download_path=request.POST.get('download_path')
-        hostname=request.POST.get('hostname')
-        env=request.POST.get('env')
-        os.chdir('/data/devops/ansible/deployments')
-        cmd_ansible = "ansible -i ../inventories/%s/internal_hosts %s -m fetch -a 'src=%s  dest=/data/'"%(env,hostname,download_path)
-        return HttpResponse(cmd_ansible)
-    return render(request,'download.html')
-
-def json_test(request):
-    return render(request,'json_test.html')
-
-def index(request):
-    redirect_url = reverse('json_test')
-    return redirect(redirect_url)
-
-def transfer(request):
-    if request.method == 'POST':
-        return HttpResponse('转账成功')
-    return render(request,'transfer.html')
-
-
+from .permissions import Permission
+from rest_framework_jwt.serializers import jwt_payload_handler
+from rest_framework_jwt.serializers import jwt_encode_handler
 class User(APIView):
+    permission_classes = [IsAdminUser]
+    authentication_classes = [JSONWebTokenAuthentication]
     def get(self,request,*args,**kwargs):
         pk = kwargs.get('pk')
         if pk:
@@ -343,8 +197,32 @@ class Book(APIView):
         })
 
 
-from .permissions import Permission
+from rest_framework.permissions import IsAdminUser
 class Publisher(ListCreateAPIView,RetrieveUpdateAPIView):
     queryset = models.t_publisher.objects.filter()
     serializer_class = serializers.PublisherSerializer
     permission_classes = [Permission]
+
+from .throtties import SMSRateThrottle
+class Sms(APIView):
+    throttle_classes = [SMSRateThrottle]
+    def get(self,request,*args,**kwargs):
+        return ApiResponse(results='get 获取验证码ok')
+    def post(self,request,*args,**kwargs):
+        return ApiResponse(results='post 获取验证码Ok')
+
+#   实现多方式登录签发token：账号、手机号、邮箱等登录
+#   1.禁用认证与权限组件
+#   2.拿到前台登录信息
+#   3.校验得到登录用户
+#   4.签发token并返回
+from app02.serializers import UserModelSerializer
+class LoginApiView(APIView):
+    authentication_classes = []
+    permission_classes = []
+    def post(self,request,*args,**kwargs):
+        request_data = request.data
+        user_serializer = UserModelSerializer(data=request_data)
+        user_serializer.is_valid(raise_exception=True)
+        data = UserModelSerializer(user_serializer.user_obj).data
+        return ApiResponse(results=data,token=user_serializer.token)

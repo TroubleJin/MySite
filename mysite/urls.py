@@ -16,32 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,re_path,include
 from app01 import views
-
+from rest_framework_jwt.views import ObtainJSONWebToken
 
 urlpatterns = [
-    path(r'books/', views.Book.as_view()),
-    # 单查群接口
-    path(r'books/<pk>/', views.Book.as_view()),
-    path(r'publishers/', views.Publisher.as_view()),
-    # 单查群接口
-    path(r'publishers/<pk>/', views.Publisher.as_view()),
-    re_path('add_book/', views.add_book),
-    path('remove_book/', views.remove_book),
-    path('edit_book/', views.edit_book),
     path('admin/', admin.site.urls),
-    path('add_publisher/', views.AddPublisher.as_view()),
-    path(r'remove_publisher/page<publisher_id>', views.remove_publisher),
-    path('edit_publisher/', views.edit_publisher),
-    path('author_list/', views.author_list),
-    path('add_author/', views.add_author),
-    path('remove_author/', views.remove_author),
-    path('edit_author/', views.edit_author),
-    path('upload/', views.upload),
-    path('download/', views.download),
-    path('json_test111/', views.json_test,name='json_test'),
-    path('index/', views.index),
-    path('transfer/', views.transfer),
+    # 单查群接口
+    path(r'books/', views.Book.as_view()),
+    path(r'books/<pk>/', views.Book.as_view()),
+    # 单查群接口
+    path(r'publishers/', views.Publisher.as_view()),
+    path(r'publishers/<pk>/', views.Publisher.as_view()),
     path(r'user/', views.User.as_view()),
     # 单查群接口
     path(r'user/<pk>/', views.User.as_view()),
+    path(r'sms/', views.Sms.as_view()),
+    path(r'token/', ObtainJSONWebToken.as_view()),
+    path(r'login/', views.LoginApiView.as_view()),
 ]
