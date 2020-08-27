@@ -32,4 +32,6 @@ urlpatterns = [
     path(r'sms/', views.Sms.as_view()),
     path(r'token/', ObtainJSONWebToken.as_view()),
     path(r'login/', views.LoginApiView.as_view()),
+    path(r'school/', views.School.as_view()),
+    path(r'school/<pk>/', views.School.as_view()),
 ]

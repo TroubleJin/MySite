@@ -11,7 +11,6 @@ from rest_framework.views import APIView
 from rest_framework.response import  Response
 from rest_framework.request import Request
 from rest_framework.settings import APISettings
-from rest_framework.filters import SearchFilter #过滤器
 from rest_framework.pagination import PageNumberPagination
 #   三大认证
 from rest_framework.authentication import TokenAuthentication   #
@@ -27,6 +26,9 @@ from utils.apiresponse import ApiResponse
 from .permissions import Permission
 from rest_framework_jwt.serializers import jwt_payload_handler
 from rest_framework_jwt.serializers import jwt_encode_handler
+from rest_framework.filters import OrderingFilter,SearchFilter
+from rest_framework.permissions import IsAdminUser
+
 class User(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [JSONWebTokenAuthentication]
@@ -197,11 +199,12 @@ class Book(APIView):
         })
 
 
-from rest_framework.permissions import IsAdminUser
+
 class Publisher(ListCreateAPIView,RetrieveUpdateAPIView):
     queryset = models.t_publisher.objects.filter()
     serializer_class = serializers.PublisherSerializer
     permission_classes = [Permission]
+
 
 from .throtties import SMSRateThrottle
 class Sms(APIView):
@@ -226,3 +229,21 @@ class LoginApiView(APIView):
         user_serializer.is_valid(raise_exception=True)
         data = UserModelSerializer(user_serializer.user_obj).data
         return ApiResponse(results=data,token=user_serializer.token)
+
+
+from .pagenations import Pagenation,OffsetPagination,CustomPagination
+from .filters import LimitFilter
+class School(RetrieveUpdateAPIView,ListCreateAPIView):
+    queryset = models.t_school.objects.filter()
+    serializer_class = serializers.SchoolSerializer
+    # 局部配置过滤类
+    filter_backends = [SearchFilter,OrderingFilter,LimitFilter]
+    search_fields = ('f_name', 'f_region','f_price')
+    ordering_fields = ['f_price']
+    pagination_class = Pagenation
+    def get(self,request,*args,**kwargs):
+        if 'pk' in kwargs:
+            results = self.retrieve(request,*args,**kwargs).data
+        else:
+            results =  self.list(request,*args,**kwargs).data
+        return ApiResponse(results=results)

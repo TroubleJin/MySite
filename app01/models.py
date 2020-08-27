@@ -54,5 +54,11 @@ class t_user(models.Model):
         db_table = 't_user'
         verbose_name_plural = '用户'
 
-class User(AbstractBaseUser):
-    mobile = models.CharField(max_length=11,unique=True)
+class t_school(models.Model):
+    f_id = models.AutoField(verbose_name='学校id',primary_key=True)
+    f_name = models.CharField(verbose_name='学校名称',max_length=64)
+    f_region = models.CharField(verbose_name='学校所在区域',max_length=64)
+    f_price = models.IntegerField(verbose_name='学期价格')
+    class Meta:
+        db_table = 't_school'
+        verbose_name_plural = '学校'

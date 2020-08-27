@@ -23,8 +23,7 @@ class UserModelSerializer(ModelSerializer):
             },
             'username': {
                 'read_only': True,
-            },
-            'password':{'write_only': True},
+            }
         }
     def validate(self, attrs):
         name = attrs.get('name')

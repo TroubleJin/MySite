@@ -121,3 +121,8 @@ class PublisherSerializer(serializers.ModelSerializer):
 
 
 
+class SchoolSerializer(serializers.ModelSerializer):
+    class Meta:
+        # 序列化关联的model的类
+        model = models.t_school
+        fields = ('f_name', 'f_region','f_price')
