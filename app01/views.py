@@ -232,12 +232,15 @@ class LoginApiView(APIView):
 
 
 from .pagenations import Pagenation,OffsetPagination,CustomPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import SchoolFilterSet
 from .filters import LimitFilter
 class School(RetrieveUpdateAPIView,ListCreateAPIView):
     queryset = models.t_school.objects.filter()
     serializer_class = serializers.SchoolSerializer
     # 局部配置过滤类
-    filter_backends = [SearchFilter,OrderingFilter,LimitFilter]
+    filter_backends = [SearchFilter,OrderingFilter,LimitFilter,DjangoFilterBackend]
+    filter_class = SchoolFilterSet
     search_fields = ('f_name', 'f_region','f_price')
     ordering_fields = ['f_price']
     pagination_class = Pagenation
